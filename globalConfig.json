@@ -202,7 +202,7 @@
             "light",
             "dark"
         ],
-        "checkForUpdates": false,
+        "checkForUpdates": true,
         "supportedPythonVersion": [
             "3.9",
             "3.13"

@@ -121,6 +121,10 @@ The script:
 
 `output/TA-viewdns/` keeps an unpacked copy for inspection.
 
+`app.conf` has `check_for_updates = true` (from `meta.checkForUpdates` in `globalConfig.json`), as Splunkbase
+requires. For a private build installed directly into a Splunk Cloud stack instead of from Splunkbase, set it to
+`false`.
+
 Pinned dependencies (`package/lib/requirements.txt`):
 
 - solnlib is pinned to 7.0.0 because 8.x pulls in grpcio (a compiled binary) and OpenTelemetry.
