@@ -14,6 +14,7 @@ This is an **enrichment** add-on: it looks values up on demand. It does not inge
 - **Credit protection**: a KV store cache, dedupe within each search, a per-search lookup cap, and a results cap.
 
 Version 1.0.0 · Splunk Enterprise 9.3+ and 10.x · Splunk Cloud (Victoria and Classic) · Python 3.9 and 3.13 ·
+Splunkbase: <https://splunkbase.splunk.com/app/10461> ·
 Support: support@viewdns.info · Source and issues: <https://github.com/viewdns/splunk-addon>
 
 ---
@@ -49,7 +50,8 @@ search head cluster, deploy it with the deployer.
 
 ## Install
 
-**From Splunkbase:** in Splunk Web, open **Apps → Find More Apps**, search for "ViewDNS" and click **Install**.
+**From Splunkbase** (<https://splunkbase.splunk.com/app/10461>): in Splunk Web, open **Apps → Find More Apps**, search for "ViewDNS" and
+click **Install**.
 
 **From a file:** **Apps → Manage Apps → Install app from file**, choose `TA-viewdns-<version>.tar.gz`, then restart
 Splunk if asked.

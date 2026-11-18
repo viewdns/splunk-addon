@@ -4,6 +4,7 @@ Source for the **ViewDNS Add-on for Splunk**. It enriches Splunk searches, alert
 investigations with the ViewDNS.info API: 22 lookups, a `viewdns` search command, an alert/adaptive response action,
 a `viewdns:enrichment` sourcetype and the "ViewDNS Investigate" dashboard.
 
+- **Install from Splunkbase:** <https://splunkbase.splunk.com/app/10461>
 - **User guide** (install, configuration, command syntax and examples, lookup reference, credit usage, Splunk Cloud):
   [`package/README.md`](package/README.md). It ships inside the add-on.
 - **Release notes:** [`RELEASE_NOTES.md`](RELEASE_NOTES.md)
