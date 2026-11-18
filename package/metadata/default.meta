@@ -1,0 +1,26 @@
+[]
+access = read : [ * ], write : [ admin, sc_admin ]
+export = system
+
+[commands]
+access = read : [ * ], write : [ admin, sc_admin ]
+export = system
+
+[collections/viewdns_cache]
+access = read : [ admin, sc_admin, viewdns_user ], write : [ admin, sc_admin ]
+export = none
+
+[transforms/viewdns_cache_lookup]
+access = read : [ admin, sc_admin, viewdns_user ], write : [ admin, sc_admin ]
+export = system
+
+[savedsearches]
+export = none
+owner = nobody
+
+[views]
+export = none
+
+[ta_viewdns_settings]
+access = read : [ * ], write : [ admin, sc_admin ]
+export = none

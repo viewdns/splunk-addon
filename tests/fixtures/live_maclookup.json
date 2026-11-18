@@ -1,0 +1,9 @@
+{
+    "query": {
+        "tool": "maclookup_PRO",
+        "mac": "F0:18:98:00:00:01"
+    },
+    "response": {
+        "manufacturer": "MAC Address not found.  Please validate the MAC Address provided and try again."
+    }
+}

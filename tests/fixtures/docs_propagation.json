@@ -1,0 +1,96 @@
+{
+    "query": {
+        "tool": "propagation_PRO",
+        "domain": "domain.com"
+    },
+    "expectedresponse": "104.18.42.197 172.64.145.59",
+    "response": {
+        "server": [
+            {
+                "location": "Atlanta, USA",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Beauharnois, Canada",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Hong Kong, China",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Johannesburg, South Africa",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "London, United Kingdom",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Los Angeles, USA",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Mumbai, India",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "New York, USA",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Perth, Australia",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Rotterdam, Netherlands",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Sandefjord, Norway",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Santiago, Chile",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Seattle, USA",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Seoul, South Korea",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Singapore, Singapore",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "Sydney, Australia",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            },
+            {
+                "location": "S\u00e3o Paulo, Brazil",
+                "resultvalue": "104.18.42.197 172.64.145.59",
+                "resultstatus": "ok"
+            }
+        ]
+    }
+}

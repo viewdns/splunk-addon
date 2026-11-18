@@ -1,0 +1,58 @@
+{
+    "query": {
+        "tool": "traceroute_PRO",
+        "domain": "example.com"
+    },
+    "response": {
+        "hops": [
+            {
+                "number": "1",
+                "hostname": "obfuscated.internal.network.com",
+                "ip": "0.0.0.0",
+                "rtt": "0.000"
+            },
+            {
+                "number": "2",
+                "hostname": "obfuscated.internal.network.com",
+                "ip": "0.0.0.0",
+                "rtt": "1.000"
+            },
+            {
+                "number": "3",
+                "hostname": "air-mdsn-usshc.airstreamcomm.net",
+                "ip": "64.33.146.250",
+                "rtt": "3.513"
+            },
+            {
+                "number": "4",
+                "hostname": "chgo01.ord-msn.core.as11796.net",
+                "ip": "69.4.127.37",
+                "rtt": "7.150"
+            },
+            {
+                "number": "5",
+                "hostname": "ae-132.border1.chm.edgecastcdn.net",
+                "ip": "192.229.225.194",
+                "rtt": "9.157"
+            },
+            {
+                "number": "6",
+                "hostname": "ae-67.core1.chd.edgecastcdn.net",
+                "ip": "192.229.225.143",
+                "rtt": "30.301"
+            },
+            {
+                "number": "7",
+                "hostname": "93.184.215.14",
+                "ip": "93.184.215.14",
+                "rtt": "7.156"
+            },
+            {
+                "number": "8",
+                "hostname": "93.184.215.14",
+                "ip": "93.184.215.14",
+                "rtt": "7.161"
+            }
+        ]
+    }
+}

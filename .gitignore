@@ -1,0 +1,31 @@
+# secrets
+.env
+*.env
+!.env.example
+passwords.conf
+**/local/
+local.meta
+
+# build output
+output/
+dist/
+*.tar.gz
+*.spl
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# working notes kept locally, not part of the project
+docs/DESIGN.md
+docs/SPLUNKBASE.md

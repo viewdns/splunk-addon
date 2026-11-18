@@ -1,0 +1,9 @@
+{
+    "query": {
+        "tool": "abusecontact_PRO",
+        "domain": "viewdns.info"
+    },
+    "response": {
+        "abusecontact": "abuse@gmail.com"
+    }
+}

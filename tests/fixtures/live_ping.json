@@ -1,0 +1,176 @@
+{
+    "query": {
+        "tool": "ping_PRO_v2",
+        "domain": "viewdns.info"
+    },
+    "response": {
+        "detail": [
+            {
+                "region": "Asia",
+                "locations": [
+                    {
+                        "location": "Hong Kong, China",
+                        "ip_address": "172.67.75.9",
+                        "min_rtt": "0.614",
+                        "max_rtt": "0.766",
+                        "avg_rtt": "0.675",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "Mumbai, India",
+                        "ip_address": "104.26.13.118",
+                        "min_rtt": "1.633",
+                        "max_rtt": "1.775",
+                        "avg_rtt": "1.723",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "Seoul, South Korea",
+                        "ip_address": "172.67.75.9",
+                        "min_rtt": "2.661",
+                        "max_rtt": "2.883",
+                        "avg_rtt": "2.750",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "Singapore, Singapore",
+                        "ip_address": "20",
+                        "min_rtt": "1.043",
+                        "max_rtt": "1.144",
+                        "avg_rtt": "1.093",
+                        "packet_loss": "0%"
+                    }
+                ]
+            },
+            {
+                "region": "Oceania",
+                "locations": [
+                    {
+                        "location": "Sydney, Australia",
+                        "ip_address": "2606:4700:20::681a:d76",
+                        "min_rtt": "0.000",
+                        "max_rtt": "0.000",
+                        "avg_rtt": "0.000",
+                        "packet_loss": "100%"
+                    }
+                ]
+            },
+            {
+                "region": "Africa",
+                "locations": [
+                    {
+                        "location": "Johannesburg, South Africa",
+                        "ip_address": "104.26.13.118",
+                        "min_rtt": "1.327",
+                        "max_rtt": "1.401",
+                        "avg_rtt": "1.373",
+                        "packet_loss": "0%"
+                    }
+                ]
+            },
+            {
+                "region": "Europe",
+                "locations": [
+                    {
+                        "location": "Amsterdam, Netherlands",
+                        "ip_address": "104.26.12.118",
+                        "min_rtt": "1.332",
+                        "max_rtt": "2.628",
+                        "avg_rtt": "2.294",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "London, United Kingdom",
+                        "ip_address": "172.67.75.9",
+                        "min_rtt": "0.897",
+                        "max_rtt": "1.075",
+                        "avg_rtt": "0.996",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "Oslo, Norway",
+                        "ip_address": "104.26.12.118",
+                        "min_rtt": "1.593",
+                        "max_rtt": "1.642",
+                        "avg_rtt": "1.617",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "Paris, France",
+                        "ip_address": "2606:4700:20::681a:d76",
+                        "min_rtt": "0.000",
+                        "max_rtt": "0.000",
+                        "avg_rtt": "0.000",
+                        "packet_loss": "100%"
+                    }
+                ]
+            },
+            {
+                "region": "North America",
+                "locations": [
+                    {
+                        "location": "Atlanta, USA",
+                        "ip_address": "104.26.12.118",
+                        "min_rtt": "1.046",
+                        "max_rtt": "1.256",
+                        "avg_rtt": "1.129",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "Beauharnois, Canada",
+                        "ip_address": "104.26.12.118",
+                        "min_rtt": "7.600",
+                        "max_rtt": "7.687",
+                        "avg_rtt": "7.637",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "Los Angeles, USA",
+                        "ip_address": "172.67.75.9",
+                        "min_rtt": "0.605",
+                        "max_rtt": "0.943",
+                        "avg_rtt": "0.779",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "New York, USA",
+                        "ip_address": "104.26.13.118",
+                        "min_rtt": "7.645",
+                        "max_rtt": "7.843",
+                        "avg_rtt": "7.759",
+                        "packet_loss": "0%"
+                    },
+                    {
+                        "location": "Seattle, USA",
+                        "ip_address": "172.67.75.9",
+                        "min_rtt": "0.636",
+                        "max_rtt": "0.747",
+                        "avg_rtt": "0.695",
+                        "packet_loss": "0%"
+                    }
+                ]
+            },
+            {
+                "region": "South America",
+                "locations": [
+                    {
+                        "location": "Santiago, Chile",
+                        "ip_address": "2606:4700:20::681a:d76",
+                        "min_rtt": "0.000",
+                        "max_rtt": "0.000",
+                        "avg_rtt": "0.000",
+                        "packet_loss": "100%"
+                    },
+                    {
+                        "location": "S\u00e3o Paulo, Brazil",
+                        "ip_address": "172.67.75.9",
+                        "min_rtt": "1.348",
+                        "max_rtt": "1.492",
+                        "avg_rtt": "1.430",
+                        "packet_loss": "0%"
+                    }
+                ]
+            }
+        ]
+    }
+}

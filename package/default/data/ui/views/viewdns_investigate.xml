@@ -1,0 +1,461 @@
+<form version="1.1" theme="light" hideFilters="false">
+  <label>ViewDNS Investigate</label>
+  <description>Look up a domain, IP address, email address or MAC address with ViewDNS.info. Click a domain, IP or email in a table to pivot to it.</description>
+  <fieldset submitButton="true" autoRun="false">
+    <input type="text" token="q_raw" searchWhenChanged="false">
+      <label>Domain, IP, email or MAC address</label>
+      <change>
+        <condition match="match(trim($value$), &quot;^[^@\s]+@[^@\s]+$&quot;)">
+          <eval token="q">lower(trim($value$))</eval>
+          <set token="kind">Email address</set>
+          <set token="show_email">true</set>
+          <unset token="show_ip"></unset>
+          <unset token="show_domain"></unset>
+          <unset token="show_mac"></unset>
+          <unset token="show_host"></unset>
+          <set token="show_any">true</set>
+        </condition>
+        <condition match="match(trim($value$), &quot;^([0-9A-Fa-f]{2}[:.\-]?){5}[0-9A-Fa-f]{2}$&quot;) OR match(trim($value$), &quot;^[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}$&quot;)">
+          <eval token="q">upper(trim($value$))</eval>
+          <set token="kind">MAC address</set>
+          <set token="show_mac">true</set>
+          <unset token="show_ip"></unset>
+          <unset token="show_domain"></unset>
+          <unset token="show_email"></unset>
+          <unset token="show_host"></unset>
+          <set token="show_any">true</set>
+        </condition>
+        <condition match="match(trim($value$), &quot;^\d{1,3}(\.\d{1,3}){3}$&quot;) OR match(trim($value$), &quot;^[0-9A-Fa-f:]+:[0-9A-Fa-f:.]*$&quot;)">
+          <eval token="q">lower(trim($value$))</eval>
+          <set token="kind">IP address</set>
+          <set token="show_ip">true</set>
+          <set token="show_host">true</set>
+          <unset token="show_email"></unset>
+          <unset token="show_domain"></unset>
+          <unset token="show_mac"></unset>
+          <set token="show_any">true</set>
+        </condition>
+        <condition match="len(trim($value$)) &gt; 0">
+          <eval token="q">lower(trim($value$))</eval>
+          <set token="kind">Domain</set>
+          <set token="show_domain">true</set>
+          <set token="show_host">true</set>
+          <unset token="show_email"></unset>
+          <unset token="show_ip"></unset>
+          <unset token="show_mac"></unset>
+          <set token="show_any">true</set>
+        </condition>
+        <condition>
+          <unset token="q"></unset>
+          <unset token="kind"></unset>
+          <unset token="show_email"></unset>
+          <unset token="show_ip"></unset>
+          <unset token="show_domain"></unset>
+          <unset token="show_mac"></unset>
+          <unset token="show_host"></unset>
+          <unset token="show_any"></unset>
+        </condition>
+      </change>
+    </input>
+    <input type="dropdown" token="limit" searchWhenChanged="false">
+      <label>Results per lookup</label>
+      <choice value="10">10</choice>
+      <choice value="25">25</choice>
+      <choice value="50">50</choice>
+      <choice value="100">100</choice>
+      <default>25</default>
+    </input>
+    <input type="checkbox" token="live" searchWhenChanged="false">
+      <label>Live checks (domains and IPs)</label>
+      <choice value="1">Port scan, HTTP headers, traceroute</choice>
+    </input>
+  </fieldset>
+
+  <row>
+    <panel>
+      <html>
+        <p>Each new value uses ViewDNS API queries: a domain 8 (WHOIS, IP history, DNS records, subdomains, reverse IP, abuse contact, DNSSEC, free email), an IP 6 (WHOIS, reverse IP, location, reverse DNS, abuse contact, spam blacklists), an email 2, a MAC address 1. Live checks add 3 and make ViewDNS servers contact the target.
+        Results are cached (default 24 hours; live checks and blacklists 1 hour), so repeat lookups are free. Requires the <code>viewdns_user</code> role or the <code>viewdns_lookup</code> capability.</p>
+      </html>
+    </panel>
+    <panel>
+      <title>API queries left</title>
+      <single>
+        <search>
+          <query>| viewdnsaccount | eval remaining=if(monthly_remaining="unlimited", "Unlimited", monthly_remaining) | fields remaining</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+        </search>
+        <option name="underLabel">this month</option>
+        <option name="drilldown">none</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Prepaid queries</title>
+      <single>
+        <search>
+          <query>| viewdnsaccount | fields prepaid_balance</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+        </search>
+        <option name="underLabel">balance</option>
+        <option name="drilldown">none</option>
+      </single>
+    </panel>
+  </row>
+
+  <row depends="$show_any$">
+    <panel>
+      <html>
+        <h2>$kind$: <b>$q$</b></h2>
+      </html>
+    </panel>
+  </row>
+
+  <!-- ============================== Domain and IP ============================== -->
+  <row depends="$show_host$">
+    <panel>
+      <title>WHOIS</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=whois field=q
+| fields viewdns_* | fields - viewdns_action viewdns_query viewdns_cached viewdns_result_count viewdns_total_count viewdns_truncated
+| transpose 0 column_name=Field | rename "row 1" as Value
+| eval Field=replace(Field, "^viewdns_", "") | where isnotnull(Value) AND Value!=""</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">30</option>
+        <option name="drilldown">cell</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <condition match="in(&quot;$row.Field$&quot;, &quot;nameserver&quot;, &quot;registrant_email&quot;, &quot;admin_email&quot;, &quot;tech_email&quot;)">
+            <set token="form.q_raw">$click.value2$</set>
+          </condition>
+          <condition></condition>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================== Domain ============================== -->
+  <row depends="$show_domain$">
+    <panel>
+      <title>Domain facts</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=abuselookup field=q prefix=a_
+| viewdns action=dnssec field=q prefix=s_
+| viewdns action=freeemail field=q prefix=f_
+| eval "Abuse contact"=coalesce(a_abuse_contact, a_error, "none found"),
+       DNSSEC=case(s_dnssec_enabled="true", "Enabled (algorithm ".mvjoin(mvdedup(s_dnssec_algorithm), ", ").")", s_dnssec_enabled="false", "Not enabled", true(), coalesce(s_error, "unknown")),
+       "Free email provider"=case(f_free_email="true", "Yes", f_free_email="false", "No", true(), coalesce(f_error, "unknown"))
+| table "Abuse contact" DNSSEC "Free email provider"</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+  <row depends="$show_domain$">
+    <panel>
+      <title>IP history</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=iphistory field=q output=rows limit=$limit$
+| where isnotnull(viewdns_ip)
+| table viewdns_ip viewdns_owner viewdns_location viewdns_last_seen
+| rename viewdns_ip as "IP address", viewdns_owner as Owner, viewdns_location as Location, viewdns_last_seen as "Last seen"</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <condition field="IP address">
+            <set token="form.q_raw">$click.value2$</set>
+          </condition>
+          <condition></condition>
+        </drilldown>
+      </table>
+    </panel>
+    <panel>
+      <title>DNS records</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=dnsrecord field=q recordtype=ANY output=rows limit=$limit$
+| where isnotnull(viewdns_record_type)
+| table viewdns_record_type viewdns_record_name viewdns_record_priority viewdns_record_data viewdns_record_ttl
+| rename viewdns_record_type as Type, viewdns_record_name as Name, viewdns_record_priority as Priority, viewdns_record_data as Data, viewdns_record_ttl as TTL</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+  <row depends="$show_domain$">
+    <panel>
+      <title>Subdomains</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=subdomains field=q output=rows limit=$limit$
+| eval Shown=viewdns_result_count." of ".viewdns_total_count
+| where isnotnull(viewdns_subdomain)
+| table viewdns_subdomain viewdns_subdomain_ips viewdns_last_resolved Shown
+| rename viewdns_subdomain as Subdomain, viewdns_subdomain_ips as "IP addresses", viewdns_last_resolved as "Last resolved"</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <condition field="IP addresses">
+            <set token="form.q_raw">$click.value2$</set>
+          </condition>
+          <condition></condition>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================== IP ============================== -->
+  <row depends="$show_ip$">
+    <panel>
+      <title>IP facts</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=iplocation field=q prefix=l_
+| viewdns action=reversedns field=q prefix=r_
+| viewdns action=abuselookup field=q prefix=a_
+| eval Location=coalesce(mvjoin(mvappend(l_city, l_region_name, l_country_name), ", "), l_error, "unknown"),
+       Coordinates=if(isnotnull(l_latitude), l_latitude.", ".l_longitude, null()),
+       "Reverse DNS"=coalesce(r_rdns, r_error, "none"),
+       "Abuse contact"=coalesce(a_abuse_contact, a_error, "none found")
+| table Location Coordinates "Reverse DNS" "Abuse contact"</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+  <row depends="$show_ip$">
+    <panel>
+      <title>Spam blacklists</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=spamdblookup field=q output=rows limit=100
+| where isnotnull(viewdns_blacklist)
+| eval Listed=if(viewdns_blacklist_result="ok", "no", "LISTED"), sort_key=if(Listed="LISTED", 0, 1)
+| eventstats count as total, sum(eval(if(Listed="LISTED",1,0))) as listed
+| eval Summary="Listed on ".listed." of ".total
+| sort sort_key viewdns_blacklist
+| table viewdns_blacklist Listed viewdns_blacklist_result Summary
+| rename viewdns_blacklist as Blacklist, viewdns_blacklist_result as Result</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <format type="color" field="Listed">
+          <colorPalette type="map">{"LISTED":#DC4E41,"no":#53A051}</colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================== Domain and IP ============================== -->
+  <row depends="$show_host$">
+    <panel>
+      <title>Reverse IP: other domains on the same server</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=reverseip field=q output=rows limit=$limit$
+| eval Shown=viewdns_result_count." of ".viewdns_total_count
+| where isnotnull(viewdns_domain)
+| table viewdns_domain viewdns_last_resolved Shown
+| rename viewdns_domain as Domain, viewdns_last_resolved as "Last resolved"</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <condition field="Domain">
+            <set token="form.q_raw">$click.value2$</set>
+          </condition>
+          <condition></condition>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================== Live checks (opt-in) ============================== -->
+  <row depends="$show_host$,$live$">
+    <panel>
+      <title>Port scan (live)</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=portscan field=q output=rows limit=100
+| where isnotnull(viewdns_port)
+| eval sort_key=if(viewdns_port_status="open", 0, 1), port_num=tonumber(viewdns_port)
+| sort sort_key port_num
+| table viewdns_port viewdns_service viewdns_port_status viewdns_cached
+| rename viewdns_port as Port, viewdns_service as Service, viewdns_port_status as Status, viewdns_cached as Cached</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <format type="color" field="Status">
+          <colorPalette type="map">{"open":#DC4E41}</colorPalette>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <title>HTTP headers (live)</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=httpheaders field=q output=rows limit=100
+| where isnotnull(viewdns_header_name)
+| table viewdns_header_name viewdns_header_value
+| rename viewdns_header_name as Header, viewdns_header_value as Value</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+
+  <row depends="$show_host$,$live$">
+    <panel>
+      <title>Traceroute from ViewDNS (live)</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=traceroute field=q output=rows limit=100
+| where isnotnull(viewdns_hop)
+| table viewdns_hop viewdns_hop_hostname viewdns_hop_ip viewdns_hop_rtt
+| rename viewdns_hop as Hop, viewdns_hop_hostname as Hostname, viewdns_hop_ip as "IP address", viewdns_hop_rtt as "RTT (ms)"</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">30</option>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <condition field="IP address">
+            <set token="form.q_raw">$click.value2$</set>
+          </condition>
+          <condition></condition>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================== Email ============================== -->
+  <row depends="$show_email$">
+    <panel>
+      <title>Email domain</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=freeemail field=q
+| eval Domain=viewdns_query, "Free email provider"=case(viewdns_free_email="true", "Yes", viewdns_free_email="false", "No", true(), coalesce(viewdns_error, "unknown"))
+| table Domain "Free email provider"</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <condition field="Domain">
+            <set token="form.q_raw">$click.value2$</set>
+          </condition>
+          <condition></condition>
+        </drilldown>
+      </table>
+    </panel>
+    <panel>
+      <title>Reverse WHOIS: domains registered with this email</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=reversewhois field=q output=rows limit=$limit$
+| eval Shown=viewdns_result_count." of ".viewdns_total_count
+| where isnotnull(viewdns_domain)
+| table viewdns_domain viewdns_created viewdns_registrar Shown
+| rename viewdns_domain as Domain, viewdns_created as Created, viewdns_registrar as Registrar</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <condition field="Domain">
+            <set token="form.q_raw">$click.value2$</set>
+          </condition>
+          <condition></condition>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================== MAC ============================== -->
+  <row depends="$show_mac$">
+    <panel>
+      <title>MAC address manufacturer</title>
+      <table>
+        <search>
+          <query>| makeresults | eval q=$q|s$
+| viewdns action=maclookup field=q
+| eval Manufacturer=case(viewdns_status="ok", viewdns_manufacturer, viewdns_status="no_results", "Not found in the OUI database", true(), viewdns_error)
+| table Manufacturer</query>
+          <earliest>-1m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+
+  <!-- ============================== Alert enrichments ============================== -->
+  <row depends="$show_any$">
+    <panel>
+      <title>Enrichment events for this value (ViewDNS Enrichment alert action, last 30 days)</title>
+      <table>
+        <search>
+          <query>index=* sourcetype="viewdns:enrichment" query=$q|s$
+| table _time search_name lookup status result_count total_count orig_sid
+| sort - _time</query>
+          <earliest>-30d@d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">5</option>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+</form>

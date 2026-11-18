@@ -1,0 +1,9 @@
+{
+    "query": {
+        "tool": "reversedns_PRO",
+        "ip": "8.8.8.8"
+    },
+    "response": {
+        "rdns": "dns.google"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "query": {
+        "tool": "httpheaders_PRO",
+        "domain": "viewdns.info"
+    },
+    "response": {
+        "headers": []
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "query": {
+        "tool": "iplocation_PRO",
+        "ip": "8.8.8.8"
+    },
+    "response": {
+        "city": "",
+        "zipcode": "0",
+        "region_code": "",
+        "region_name": "",
+        "country_code": "US",
+        "country_name": "United States",
+        "latitude": "37.751",
+        "longitude": "-97.822",
+        "gmt_offset": "",
+        "dst_offset": ""
+    }
+}

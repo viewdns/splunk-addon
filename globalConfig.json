@@ -1,0 +1,452 @@
+{
+    "pages": {
+        "configuration": {
+            "title": "Configuration",
+            "description": "Connect the add-on to the ViewDNS.info API. Every uncached lookup uses one API query from your ViewDNS plan.",
+            "tabs": [
+                {
+                    "name": "viewdns",
+                    "title": "ViewDNS Settings",
+                    "entity": [
+                        {
+                            "type": "text",
+                            "label": "API key",
+                            "field": "api_key",
+                            "encrypted": true,
+                            "required": true,
+                            "help": "Your ViewDNS.info API key. It is stored encrypted in Splunk's credential store and checked against the free account balance API when saved.",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "pattern": "^\\S{8,128}$",
+                                    "errorMsg": "The API key must be 8 to 128 characters with no spaces."
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "label": "Base URL",
+                            "field": "base_url",
+                            "defaultValue": "https://api.viewdns.info",
+                            "required": true,
+                            "help": "The ViewDNS API base URL. HTTPS is required.",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "pattern": "^https://[A-Za-z0-9.\\-]+(:\\d{1,5})?(/[^\\s]*)?$",
+                                    "errorMsg": "The base URL must start with https://."
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "label": "Request timeout (seconds)",
+                            "field": "timeout",
+                            "defaultValue": "100",
+                            "required": true,
+                            "validators": [
+                                {
+                                    "type": "number",
+                                    "range": [
+                                        1,
+                                        300
+                                    ],
+                                    "isInteger": true,
+                                    "errorMsg": "The timeout must be a whole number from 1 to 300."
+                                }
+                            ],
+                            "help": "Seconds to wait for a ViewDNS API response. Large reverse lookups can take a while. A request that times out is not retried, because ViewDNS may already have counted the query."
+                        },
+                        {
+                            "type": "text",
+                            "label": "Max results per lookup",
+                            "field": "max_results",
+                            "defaultValue": "100",
+                            "required": true,
+                            "help": "The most results kept for one lookup, such as domains on a reverse IP. The limit= argument of the viewdns command cannot exceed it.",
+                            "validators": [
+                                {
+                                    "type": "number",
+                                    "range": [
+                                        1,
+                                        10000
+                                    ],
+                                    "isInteger": true,
+                                    "errorMsg": "Max results must be a whole number from 1 to 10000."
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "label": "Max API lookups per search",
+                            "field": "max_lookups",
+                            "defaultValue": "1000",
+                            "required": true,
+                            "help": "A credit guard: the most uncached API calls one search or alert can make. Further values are skipped with a warning.",
+                            "validators": [
+                                {
+                                    "type": "number",
+                                    "range": [
+                                        1,
+                                        100000
+                                    ],
+                                    "isInteger": true,
+                                    "errorMsg": "Max lookups must be a whole number from 1 to 100000."
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "label": "Cache TTL (seconds)",
+                            "field": "cache_ttl",
+                            "defaultValue": "86400",
+                            "required": true,
+                            "help": "How long lookup results are kept in the KV store cache. 0 disables the cache.",
+                            "validators": [
+                                {
+                                    "type": "number",
+                                    "range": [
+                                        0,
+                                        2592000
+                                    ],
+                                    "isInteger": true,
+                                    "errorMsg": "The cache TTL must be a whole number from 0 to 2592000 (30 days)."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "proxy",
+                    "title": "Proxy",
+                    "entity": [
+                        {
+                            "type": "checkbox",
+                            "label": "Enable proxy",
+                            "field": "proxy_enabled"
+                        },
+                        {
+                            "type": "text",
+                            "label": "Proxy host",
+                            "field": "proxy_url",
+                            "help": "Host name or IP address of an HTTP proxy.",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "pattern": "^[A-Za-z0-9.\\-:\\[\\]]{1,255}$",
+                                    "errorMsg": "Enter a host name or IP address, without a scheme."
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "label": "Proxy port",
+                            "field": "proxy_port",
+                            "validators": [
+                                {
+                                    "type": "number",
+                                    "range": [
+                                        1,
+                                        65535
+                                    ],
+                                    "isInteger": true,
+                                    "errorMsg": "The port must be from 1 to 65535."
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "label": "Proxy username",
+                            "field": "proxy_username",
+                            "validators": [
+                                {
+                                    "type": "string",
+                                    "minLength": 0,
+                                    "maxLength": 100,
+                                    "errorMsg": "The username can be at most 100 characters."
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "label": "Proxy password",
+                            "field": "proxy_password",
+                            "encrypted": true,
+                            "validators": [
+                                {
+                                    "type": "string",
+                                    "minLength": 0,
+                                    "maxLength": 8192,
+                                    "errorMsg": "The password can be at most 8192 characters."
+                                }
+                            ]
+                        }
+                    ],
+                    "options": {
+                        "saveValidator": "function(formData) { if(!formData.proxy_enabled || formData.proxy_enabled === '0') {return true; } if(!formData.proxy_url) { return 'Proxy host cannot be empty'; } if(!formData.proxy_port) { return 'Proxy port cannot be empty'; } return true; }"
+                    }
+                },
+                {
+                    "type": "loggingTab"
+                }
+            ]
+        }
+    },
+    "meta": {
+        "name": "TA-viewdns",
+        "restRoot": "ta_viewdns",
+        "version": "1.0.0",
+        "displayName": "ViewDNS Add-on for Splunk",
+        "schemaVersion": "0.0.10",
+        "supportedThemes": [
+            "light",
+            "dark"
+        ],
+        "checkForUpdates": false,
+        "supportedPythonVersion": [
+            "3.9",
+            "3.13"
+        ]
+    },
+    "alerts": [
+        {
+            "name": "viewdns_enrichment",
+            "label": "ViewDNS Enrichment",
+            "description": "Looks up a field of each triggering result with ViewDNS.info and writes the results to an index (sourcetype viewdns:enrichment).",
+            "iconFileName": "alerticon.png",
+            "entity": [
+                {
+                    "type": "singleSelect",
+                    "label": "Lookup",
+                    "field": "lookup_action",
+                    "required": true,
+                    "defaultValue": "whois",
+                    "help": "The ViewDNS lookup to run. Each distinct uncached value uses one API query.",
+                    "options": {
+                        "items": [
+                            {
+                                "value": "whois",
+                                "label": "WHOIS of a domain or IP"
+                            },
+                            {
+                                "value": "reverseip",
+                                "label": "Reverse IP (domains on an IP)"
+                            },
+                            {
+                                "value": "iphistory",
+                                "label": "IP history of a domain"
+                            },
+                            {
+                                "value": "dnsrecord",
+                                "label": "DNS records of a domain"
+                            },
+                            {
+                                "value": "subdomains",
+                                "label": "Subdomains of a domain"
+                            },
+                            {
+                                "value": "reversewhois",
+                                "label": "Reverse WHOIS (domains by registrant)"
+                            },
+                            {
+                                "value": "reversens",
+                                "label": "Reverse NS (domains on a name server)"
+                            },
+                            {
+                                "value": "reversemx",
+                                "label": "Reverse MX (domains on a mail server)"
+                            },
+                            {
+                                "value": "abuselookup",
+                                "label": "Abuse contact of a domain or IP"
+                            },
+                            {
+                                "value": "iplocation",
+                                "label": "IP location"
+                            },
+                            {
+                                "value": "reversedns",
+                                "label": "Reverse DNS (PTR) of an IP"
+                            },
+                            {
+                                "value": "spamdblookup",
+                                "label": "Spam blacklist status of an IP"
+                            },
+                            {
+                                "value": "dnssec",
+                                "label": "DNSSEC status of a domain"
+                            },
+                            {
+                                "value": "freeemail",
+                                "label": "Free email provider check"
+                            },
+                            {
+                                "value": "maclookup",
+                                "label": "MAC address manufacturer"
+                            },
+                            {
+                                "value": "httpheaders",
+                                "label": "HTTP headers (live check)"
+                            },
+                            {
+                                "value": "portscan",
+                                "label": "Port scan (live check)"
+                            },
+                            {
+                                "value": "traceroute",
+                                "label": "Traceroute (live check)"
+                            },
+                            {
+                                "value": "ping",
+                                "label": "Ping from global locations (live check)"
+                            },
+                            {
+                                "value": "propagation",
+                                "label": "DNS propagation (live check)"
+                            },
+                            {
+                                "value": "chinesefirewall",
+                                "label": "China firewall test (live check)"
+                            },
+                            {
+                                "value": "iranfirewall",
+                                "label": "Iran firewall test (live check)"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "text",
+                    "label": "Field",
+                    "field": "field",
+                    "required": true,
+                    "defaultValue": "dest",
+                    "help": "Name of the field in the triggering results that holds the value to look up, such as dest_ip, domain or src_user."
+                },
+                {
+                    "type": "singleSelect",
+                    "label": "DNS record type",
+                    "field": "recordtype",
+                    "required": false,
+                    "defaultValue": "ANY",
+                    "help": "Only used by the DNS records lookup.",
+                    "options": {
+                        "items": [
+                            {
+                                "value": "ANY",
+                                "label": "ANY"
+                            },
+                            {
+                                "value": "A",
+                                "label": "A"
+                            },
+                            {
+                                "value": "AAAA",
+                                "label": "AAAA"
+                            },
+                            {
+                                "value": "CAA",
+                                "label": "CAA"
+                            },
+                            {
+                                "value": "CNAME",
+                                "label": "CNAME"
+                            },
+                            {
+                                "value": "DNSKEY",
+                                "label": "DNSKEY"
+                            },
+                            {
+                                "value": "DS",
+                                "label": "DS"
+                            },
+                            {
+                                "value": "MX",
+                                "label": "MX"
+                            },
+                            {
+                                "value": "NS",
+                                "label": "NS"
+                            },
+                            {
+                                "value": "NSEC",
+                                "label": "NSEC"
+                            },
+                            {
+                                "value": "PTR",
+                                "label": "PTR"
+                            },
+                            {
+                                "value": "RRSIG",
+                                "label": "RRSIG"
+                            },
+                            {
+                                "value": "SOA",
+                                "label": "SOA"
+                            },
+                            {
+                                "value": "SRV",
+                                "label": "SRV"
+                            },
+                            {
+                                "value": "TXT",
+                                "label": "TXT"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "text",
+                    "label": "Max results per value",
+                    "field": "limit",
+                    "required": false,
+                    "defaultValue": "",
+                    "help": "Leave empty to use Max results per lookup from the add-on's Configuration page (it cannot be exceeded)."
+                },
+                {
+                    "type": "text",
+                    "label": "Max values per alert",
+                    "field": "max_values",
+                    "required": false,
+                    "defaultValue": "100",
+                    "help": "Only the first N distinct values of the triggering results are looked up. The add-on's per-search credit guard also applies."
+                },
+                {
+                    "type": "text",
+                    "label": "Index",
+                    "field": "index",
+                    "required": true,
+                    "defaultValue": "summary",
+                    "help": "Index for the enrichment events. The alert owner must be allowed to write to it."
+                }
+            ],
+            "adaptiveResponse": {
+                "task": [
+                    "scan"
+                ],
+                "subject": [
+                    "network.domain",
+                    "network.ip",
+                    "email",
+                    "endpoint.mac"
+                ],
+                "category": [
+                    "Information Gathering"
+                ],
+                "technology": [
+                    {
+                        "vendor": "ViewDNS.info",
+                        "product": "ViewDNS API",
+                        "version": [
+                            "1"
+                        ]
+                    }
+                ],
+                "supportsAdhoc": true,
+                "supportsCloud": true,
+                "drilldownUri": "search?q=search%20index%3D*%20sourcetype%3D%22viewdns%3Aenrichment%22%20orig_sid%3D$sid$&earliest=$info_min_time$&latest=$info_max_time$",
+                "sourcetype": "viewdns:enrichment"
+            }
+        }
+    ]
+}

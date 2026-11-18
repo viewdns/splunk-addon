@@ -1,0 +1,64 @@
+{
+    "query": {
+        "tool": "traceroute_PRO",
+        "domain": "viewdns.info"
+    },
+    "response": {
+        "hops": [
+            {
+                "number": "1",
+                "hostname": "obfuscated.internal.network.com",
+                "ip": "0.0.0.0",
+                "rtt": "0.000"
+            },
+            {
+                "number": "2",
+                "hostname": "obfuscated.internal.network.com",
+                "ip": "0.0.0.0",
+                "rtt": "1.000"
+            },
+            {
+                "number": "3",
+                "hostname": "salt-b4-link.ip.twelve99.net",
+                "ip": "213.248.79.138",
+                "rtt": "1.130"
+            },
+            {
+                "number": "4",
+                "hostname": "salt-b4-link.ip.twelve99.net",
+                "ip": "213.248.79.138",
+                "rtt": "1.106"
+            },
+            {
+                "number": "5",
+                "hostname": "salt-b8-link.ip.twelve99.net",
+                "ip": "62.115.134.24",
+                "rtt": "2.537"
+            },
+            {
+                "number": "6",
+                "hostname": "den-b3-link.ip.twelve99.net",
+                "ip": "62.115.137.153",
+                "rtt": "10.798"
+            },
+            {
+                "number": "7",
+                "hostname": "den-b3-link.ip.twelve99.net",
+                "ip": "62.115.137.153",
+                "rtt": "10.552"
+            },
+            {
+                "number": "8",
+                "hostname": "172.68.32.26",
+                "ip": "172.68.32.26",
+                "rtt": "14.147"
+            },
+            {
+                "number": "9",
+                "hostname": "172.68.32.10",
+                "ip": "172.68.32.10",
+                "rtt": "14.394"
+            }
+        ]
+    }
+}

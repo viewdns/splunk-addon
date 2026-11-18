@@ -1,0 +1,61 @@
+{
+    "query": {
+        "tool": "subdomains_PRO",
+        "domain": "viewdns.info"
+    },
+    "response": {
+        "subdomain_count": "6",
+        "total_pages": "1",
+        "current_page": "1",
+        "subdomains": [
+            {
+                "name": "api.viewdns.info",
+                "ips": [
+                    "104.26.12.118",
+                    "104.26.13.118",
+                    "172.67.75.9"
+                ],
+                "last_resolved": "2026-11-18"
+            },
+            {
+                "name": "beta.viewdns.info",
+                "ips": [
+                    "104.26.12.118",
+                    "104.26.13.118",
+                    "172.67.75.9"
+                ],
+                "last_resolved": "2026-11-18"
+            },
+            {
+                "name": "download.viewdns.info",
+                "ips": [
+                    "178.63.32.71"
+                ],
+                "last_resolved": "2026-11-18"
+            },
+            {
+                "name": "mail.viewdns.info",
+                "ips": [],
+                "last_resolved": null
+            },
+            {
+                "name": "pro.viewdns.info",
+                "ips": [
+                    "104.26.12.118",
+                    "172.67.75.9",
+                    "104.26.13.118"
+                ],
+                "last_resolved": "2026-11-17"
+            },
+            {
+                "name": "www.viewdns.info",
+                "ips": [
+                    "104.26.12.118",
+                    "104.26.13.118",
+                    "172.67.75.9"
+                ],
+                "last_resolved": "2026-11-18"
+            }
+        ]
+    }
+}

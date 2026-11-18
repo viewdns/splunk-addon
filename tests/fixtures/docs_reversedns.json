@@ -1,0 +1,9 @@
+{
+    "query": {
+        "tool": "reversedns_PRO",
+        "ip": "9.9.9.9"
+    },
+    "response": {
+        "rdns": "dns9.quad9.net."
+    }
+}

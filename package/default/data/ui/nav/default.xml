@@ -1,0 +1,8 @@
+<nav search_view="search">
+  <view name="viewdns_investigate" default="true"/>
+  <view name="configuration"/>
+  <view name="search"/>
+  <collection label="Cache">
+    <a href="search?q=%7C%20inputlookup%20viewdns_cache_lookup%20%7C%20eval%20fetched%3Dstrftime(fetched_at%2C%22%25F%20%25T%22)%2C%20expires%3Dstrftime(expires_at%2C%22%25F%20%25T%22)%20%7C%20table%20action%20query%20recordtype%20status%20total_count%20fetched%20expires">Cached lookups</a>
+  </collection>
+</nav>

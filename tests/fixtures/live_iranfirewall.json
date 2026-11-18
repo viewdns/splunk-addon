@@ -1,0 +1,9 @@
+{
+    "query": {
+        "tool": "iranfirewall_PRO",
+        "siteurl": "https://viewdns.info"
+    },
+    "response": {
+        "result": "ok"
+    }
+}

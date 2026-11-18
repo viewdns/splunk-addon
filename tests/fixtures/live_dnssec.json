@@ -1,0 +1,21 @@
+{
+    "query": {
+        "tool": "dnssec",
+        "domain": "viewdns.info"
+    },
+    "response": {
+        "result": {
+            "status": "true",
+            "detail": {
+                "signatures": [
+                    {
+                        "type": "HINFO",
+                        "algorithm": "13",
+                        "signedby": "viewdns.info.",
+                        "value": "V6khCXAshdWQY8TD2jK8+jCn8l0FUL5z8RaLcbLYkd2V2hcx3O3HRZ4JPSkTw1lg+Qa8cyxSI5Xw3FZMUTtL6w=="
+                    }
+                ]
+            }
+        }
+    }
+}

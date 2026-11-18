@@ -1,0 +1,12 @@
+{
+    "query": {
+        "tool": "subdomains_PRO",
+        "domain": "unknown-domain.example"
+    },
+    "response": {
+        "subdomain_count": "0",
+        "total_pages": "1",
+        "current_page": "1",
+        "subdomains": []
+    }
+}
