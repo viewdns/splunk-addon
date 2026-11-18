@@ -110,8 +110,8 @@ class RemoteResolver(object):
                 if error:
                     outcomes[raw] = Outcome(
                         str(raw).strip(), STATUS_ERROR,
-                        error="ViewDNS: '{0}' is {1} for {2} (expected a {3}).".format(
-                            str(raw).strip()[:100], error, action.label, action.input_label
+                        error="ViewDNS: {0} can't look up '{1}': {2}.".format(
+                            action.label, str(raw).strip()[:100], error
                         ),
                     )
                     self._message(

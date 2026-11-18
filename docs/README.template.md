@@ -318,22 +318,32 @@ The cache holds results, not the API key, and is shared by all users of the add-
 
 | Message | What to do |
 |---|---|
-| *the add-on is not configured yet* / *no API key is configured* | Save your API key on the Configuration page. |
-| *the API key is invalid* | Check the key. The add-on stops calling the API for the rest of the search. |
-| *the API query quota is used up* | Your monthly limit is reached and no prepaid queries remain. Check `\| viewdnsaccount`. |
-| *this lookup requires a paid ViewDNS API plan* | WHOIS and Reverse WHOIS need a paid key. Other lookups keep working. |
-| *your Splunk role is not allowed to run ViewDNS lookups* | Ask an admin for the `viewdns_user` role. |
-| *'x' is not a valid ... for <lookup>* | The value doesn't fit the lookup (for example a domain for `iplocation`). No query is used. |
-| *the credit guard stopped lookups after N API calls* | Narrow the search, or raise Max API lookups per search. |
-| *no response within N seconds* | Raise the request timeout (large reverse lookups can take close to a minute). |
-| *could not connect to the API* / *stopped after 5 consecutive network failures* | Check outbound access to api.viewdns.info:443 and the proxy settings. |
+| *the add-on is not configured yet* / *no API key is configured* | Save your API key on the Configuration page (ViewDNS Settings tab). |
+| *the API key is invalid* | Check the key at https://viewdns.info/api/ and save it again. The add-on stops calling the API for the rest of the search. |
+| *the API query quota is used up* | The monthly limit is reached and no prepaid queries remain. Run `\| viewdnsaccount` to see usage and balance. |
+| *this lookup requires a paid ViewDNS API plan* / *Reverse WHOIS requires a paid ViewDNS API plan* | WHOIS and Reverse WHOIS need a paid key. Other lookups keep working. |
+| *your Splunk role is not allowed to run ViewDNS lookups* | Ask an admin for the `viewdns_user` role (or the `viewdns_lookup` capability). |
+| *<Lookup> can't look up '<value>': ...* (in `viewdns_error`), with the warning *some values were not looked up because they are not valid input for <Lookup>* | The value doesn't fit the lookup, for example a domain for IP Location. No query is used. |
+| *the API rejected some values for <Lookup>* (warning; details in `viewdns_error`) | ViewDNS rejected those values, for example a domain that doesn't resolve for Reverse IP. |
+| *the credit guard stopped lookups after N API calls in this search* (warning) | Narrow the search, or raise Max API lookups per search. Remaining values get `viewdns_status=skipped_quota_guard`. |
+| *no response within N seconds. Not retried, ...* | Raise the Request timeout. The default (100 seconds) covers the slowest lookups seen in testing (reverse MX of the largest mail providers, about 50 seconds). The timed-out request may have used a query. |
+| *could not connect to the API* / *could not connect to the API within N seconds* / *stopped after 5 consecutive network failures* | Check outbound HTTPS from the search head to `api.viewdns.info:443`, DNS resolution, and the Proxy tab. |
+| *the API is unavailable (HTTP 5xx) after 3 retries* | A temporary ViewDNS problem. Try again later. |
+| *the add-on's lookup service returned HTTP N* | The add-on's REST endpoint failed. Check `index=_internal source=*ta_viewdns.log` and restart Splunk if the add-on was just installed or upgraded. |
 
 Errors appear as search messages, never as stack traces. On Splunk 10.x, errors that stop all lookups (bad key, no
 quota, no permission) end the search with the message. On 9.x, the search continues and the events carry
 `viewdns_status=error`. Per-value problems are warnings, and the affected events carry `viewdns_status=error` and
 `viewdns_error`.
 
-Logs: `index=_internal source=*ta_viewdns.log`. Set the level to DEBUG on the Logging tab for more detail.
+Logs:
+
+- `index=_internal source=*ta_viewdns.log`: the search commands, the lookup endpoint (every API call) and the
+  configuration page's key check.
+- `index=_internal source=*viewdns_enrichment_modalert.log`: each alert action run.
+
+Setting the level to DEBUG on the Logging tab adds a line for every API call, with the endpoint and HTTP status.
+Query strings, API keys and response bodies are never logged.
 
 ## Splunk Cloud
 
